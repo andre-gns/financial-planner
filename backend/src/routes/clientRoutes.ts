@@ -12,47 +12,18 @@ import {
   createClientSchema,
   updateClientSchema,
   clientParamsSchema,
-} from "../schemas/clientSchema";
+} from "../schemas/schemas";
 
 export async function clientRoutes(fastify: FastifyInstance) {
   const server = fastify.withTypeProvider<ZodTypeProvider>();
 
-  server.post(
-    "/",
-    {
-      schema: {
-        body: createClientSchema,
-      },
-    },
-    createClientHandler
-  );
+  server.post("/", createClientHandler);
 
   server.get("/", getClientsHandler);
 
-  server.get(
-    "/:id",
-    {
-      schema: {
-        params: clientParamsSchema,
-      },
-    },
-    getClientHandler
-  );
+  server.get("/:id", getClientHandler);
 
-  server.put(
-    "/:id",
-    {
-      schema: {
-        params: clientParamsSchema,
-        body: updateClientSchema,
-      },
-    },
-    updateClientHandler
-  );
+  server.put("/:id", updateClientHandler);
 
-  server.delete(
-    "/:id",
-    { schema: { params: clientParamsSchema } },
-    deleteClientHandler
-  );
+  server.delete("/:id", deleteClientHandler);
 }

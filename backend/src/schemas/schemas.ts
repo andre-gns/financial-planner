@@ -13,3 +13,17 @@ export const updateClientSchema = createClientSchema.partial();
 export const clientParamsSchema = z.object({
   id: z.string().uuid(),
 });
+
+export const createGoalSchema = z.object({
+  title: z.string().min(3),
+  description: z.string().optional(),
+  targetAmount: z.number().positive(),
+  deadline: z.string().datetime().optional(),
+  clientId: z.string().uuid(),
+});
+
+export const updateGoalSchema = createGoalSchema.partial();
+
+export const goalParamsSchema = z.object({
+  id: z.string().uuid(),
+});

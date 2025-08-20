@@ -1,11 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import prisma from "../utils/prisma";
+import { prisma } from "../utils/prisma";
 import { z } from "zod";
 import {
   createClientSchema,
   updateClientSchema,
   clientParamsSchema,
-} from "../schemas/clientSchema";
+} from "../schemas/schemas";
 
 type CreateClientInput = z.infer<typeof createClientSchema>;
 type UpdateClientInput = z.infer<typeof updateClientSchema>;
@@ -15,11 +15,19 @@ export async function createClientHandler(
   request: FastifyRequest<{ Body: CreateClientInput }>,
   reply: FastifyReply
 ) {
-  const data = request.body;
+  // Validação do corpo da requisição
   try {
-    const client = await prisma.client.create({ data });
+    const validatedBody = createClientSchema.parse(request.body);
+
+    const client = await prisma.client.create({ data: validatedBody });
     return reply.code(201).send(client);
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return reply
+        .code(400)
+        .send({ message: "Validation error", errors: error.issues });
+    }
+    console.error(error); // Log do erro para depuração
     return reply.code(500).send({ message: "Erro ao criar cliente" });
   }
 }
@@ -36,14 +44,23 @@ export async function getClientHandler(
   request: FastifyRequest<{ Params: ClientParamsInput }>,
   reply: FastifyReply
 ) {
-  const { id } = request.params;
-  const client = await prisma.client.findUnique({ where: { id } });
+  try {
+    const { id } = clientParamsSchema.parse(request.params);
+    const client = await prisma.client.findUnique({ where: { id } });
 
-  if (!client) {
-    return reply.code(404).send({ message: "Cliente não encontrado" });
+    if (!client) {
+      return reply.code(404).send({ message: "Cliente não encontrado" });
+    }
+
+    return reply.code(200).send(client);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return reply
+        .code(400)
+        .send({ message: "Validation error", errors: error.issues });
+    }
+    return reply.code(500).send({ message: "Erro ao buscar cliente" });
   }
-
-  return reply.code(200).send(client);
 }
 
 export async function updateClientHandler(
@@ -53,12 +70,21 @@ export async function updateClientHandler(
   }>,
   reply: FastifyReply
 ) {
-  const { id } = request.params;
-  const data = request.body;
   try {
-    const client = await prisma.client.update({ where: { id }, data });
+    const { id } = clientParamsSchema.parse(request.params);
+    const validatedBody = updateClientSchema.parse(request.body);
+
+    const client = await prisma.client.update({
+      where: { id },
+      data: validatedBody,
+    });
     return reply.code(200).send(client);
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return reply
+        .code(400)
+        .send({ message: "Validation error", errors: error.issues });
+    }
     return reply
       .code(404)
       .send({ message: "Cliente não encontrado ou erro na atualização" });
@@ -69,11 +95,17 @@ export async function deleteClientHandler(
   request: FastifyRequest<{ Params: ClientParamsInput }>,
   reply: FastifyReply
 ) {
-  const { id } = request.params;
+  //
   try {
+    const { id } = clientParamsSchema.parse(request.params);
     await prisma.client.delete({ where: { id } });
     return reply.code(204).send(); // No content response
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return reply
+        .code(400)
+        .send({ message: "Validation error", errors: error.issues });
+    }
     return reply.code(404).send({ message: "Cliente não encontrado" });
   }
 }

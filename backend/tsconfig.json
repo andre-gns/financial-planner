@@ -2,7 +2,7 @@
   "compilerOptions": {
     /* Base Options */
     "target": "es2022",
-    "module": "NodeNext",
+    "module": "commonjs", // ALTERADO
     "outDir": "./dist",
     "rootDir": "./src",
     "declaration": true,
@@ -10,15 +10,16 @@
     /* Strictness */
     "strict": true,
     /* Module Resolution */
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "node", // ALTERADO
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     /* Other */
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*.ts"
-  ],
+    "src/**/*.ts",
+    "node_modules/@prisma/client/index.d.ts"
+  ], // ALTERADO
   "exclude": [
     "node_modules"
   ]

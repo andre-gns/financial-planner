@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { prisma } from "../utils/prisma";
+import { goalsDb } from "../utils/inMemoryDatabase";
 import { z } from "zod";
 import {
   createGoalSchema,
@@ -17,7 +17,7 @@ export async function createGoalHandler(
 ) {
   try {
     const validatedBody = createGoalSchema.parse(request.body);
-    const goal = await prisma.goal.create({ data: validatedBody });
+    const goal = goalsDb.create(validatedBody);
     return reply.code(201).send(goal);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -33,7 +33,7 @@ export async function getGoalsHandler(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const goals = await prisma.goal.findMany();
+  const goals = goalsDb.findMany();
   return reply.code(200).send(goals);
 }
 
@@ -43,7 +43,7 @@ export async function getGoalHandler(
 ) {
   try {
     const { id } = goalParamsSchema.parse(request.params);
-    const goal = await prisma.goal.findUnique({ where: { id } });
+    const goal = goalsDb.findUnique(id);
 
     if (!goal) {
       return reply.code(404).send({ message: "Meta não encontrada" });
@@ -71,10 +71,14 @@ export async function updateGoalHandler(
     const { id } = goalParamsSchema.parse(request.params);
     const validatedBody = updateGoalSchema.parse(request.body);
 
-    const goal = await prisma.goal.update({
-      where: { id },
-      data: validatedBody,
-    });
+    const goal = goalsDb.update(id, validatedBody);
+
+    if (!goal) {
+      return reply
+        .code(404)
+        .send({ message: "Meta não encontrada ou erro na atualização" });
+    }
+
     return reply.code(200).send(goal);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -94,7 +98,7 @@ export async function deleteGoalHandler(
 ) {
   try {
     const { id } = goalParamsSchema.parse(request.params);
-    await prisma.goal.delete({ where: { id } });
+    goalsDb.delete(id);
     return reply.code(204).send();
   } catch (error) {
     if (error instanceof z.ZodError) {

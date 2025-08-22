@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { prisma } from "../utils/prisma";
+import { clientsDb } from "../utils/inMemoryDatabase";
 import { z } from "zod";
 import {
   createClientSchema,
@@ -15,11 +15,11 @@ export async function createClientHandler(
   request: FastifyRequest<{ Body: CreateClientInput }>,
   reply: FastifyReply
 ) {
-  // Validação do corpo da requisição
+  //
   try {
     const validatedBody = createClientSchema.parse(request.body);
 
-    const client = await prisma.client.create({ data: validatedBody });
+    const client = clientsDb.create(validatedBody);
     return reply.code(201).send(client);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -27,7 +27,7 @@ export async function createClientHandler(
         .code(400)
         .send({ message: "Validation error", errors: error.issues });
     }
-    console.error(error); // Log do erro para depuração
+    console.error(error);
     return reply.code(500).send({ message: "Erro ao criar cliente" });
   }
 }
@@ -36,7 +36,7 @@ export async function getClientsHandler(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const clients = await prisma.client.findMany();
+  const clients = clientsDb.findMany();
   return reply.code(200).send(clients);
 }
 
@@ -46,7 +46,8 @@ export async function getClientHandler(
 ) {
   try {
     const { id } = clientParamsSchema.parse(request.params);
-    const client = await prisma.client.findUnique({ where: { id } });
+
+    const client = clientsDb.findUnique(id);
 
     if (!client) {
       return reply.code(404).send({ message: "Cliente não encontrado" });
@@ -74,10 +75,14 @@ export async function updateClientHandler(
     const { id } = clientParamsSchema.parse(request.params);
     const validatedBody = updateClientSchema.parse(request.body);
 
-    const client = await prisma.client.update({
-      where: { id },
-      data: validatedBody,
-    });
+    const client = clientsDb.update(id, validatedBody);
+
+    if (!client) {
+      return reply
+        .code(404)
+        .send({ message: "Cliente não encontrado ou erro na atualização" });
+    }
+
     return reply.code(200).send(client);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -98,7 +103,8 @@ export async function deleteClientHandler(
   //
   try {
     const { id } = clientParamsSchema.parse(request.params);
-    await prisma.client.delete({ where: { id } });
+
+    clientsDb.delete(id);
     return reply.code(204).send(); // No content response
   } catch (error) {
     if (error instanceof z.ZodError) {

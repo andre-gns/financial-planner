@@ -1,28 +1,42 @@
 import { z } from "zod";
 
+// Schemas para o Cliente
 export const createClientSchema = z.object({
-  name: z.string().min(3),
+  name: z.string(),
   email: z.string().email(),
   age: z.number().int().positive(),
-  status: z.enum(["active", "inactive"]).default("active"),
+  status: z.enum(["active", "inactive"]),
   familyProfile: z.string().optional(),
 });
 
-export const updateClientSchema = createClientSchema.partial();
+export const updateClientSchema = z.object({
+  name: z.string().optional(),
+  email: z.string().email().optional(),
+  age: z.number().int().positive().optional(),
+  status: z.enum(["active", "inactive"]).optional(),
+  familyProfile: z.string().optional(),
+});
 
 export const clientParamsSchema = z.object({
   id: z.string().uuid(),
 });
 
+// Schemas para a Meta
 export const createGoalSchema = z.object({
-  title: z.string().min(3),
+  title: z.string(),
   description: z.string().optional(),
-  targetAmount: z.number().positive(),
-  deadline: z.string().datetime().optional(),
+  targetAmount: z.number().int().positive(),
   clientId: z.string().uuid(),
+  deadline: z.string().optional(),
 });
 
-export const updateGoalSchema = createGoalSchema.partial();
+export const updateGoalSchema = z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  targetAmount: z.number().int().positive().optional(),
+  clientId: z.string().uuid().optional(),
+  deadline: z.string().optional(),
+});
 
 export const goalParamsSchema = z.object({
   id: z.string().uuid(),

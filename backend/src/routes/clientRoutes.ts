@@ -1,6 +1,4 @@
 import { FastifyInstance } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { z } from "zod";
 import {
   createClientHandler,
   getClientsHandler,
@@ -14,16 +12,26 @@ import {
   clientParamsSchema,
 } from "../schemas/schemas";
 
-export async function clientRoutes(fastify: FastifyInstance) {
-  const server = fastify.withTypeProvider<ZodTypeProvider>();
-
-  server.post("/", createClientHandler);
-
-  server.get("/", getClientsHandler);
-
-  server.get("/:id", getClientHandler);
-
-  server.put("/:id", updateClientHandler);
-
-  server.delete("/:id", deleteClientHandler);
+export async function clientRoutes(server: FastifyInstance) {
+  server.post(
+    "/clients",
+    { schema: { body: createClientSchema } },
+    createClientHandler
+  );
+  server.get("/clients", getClientsHandler);
+  server.get(
+    "/clients/:id",
+    { schema: { params: clientParamsSchema } },
+    getClientHandler
+  );
+  server.put(
+    "/clients/:id",
+    { schema: { params: clientParamsSchema, body: updateClientSchema } },
+    updateClientHandler
+  );
+  server.delete(
+    "/clients/:id",
+    { schema: { params: clientParamsSchema } },
+    deleteClientHandler
+  );
 }

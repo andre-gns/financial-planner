@@ -1,21 +1,44 @@
-// prisma/schema.prisma
+// src/schemas/schemas.ts
+import { z } from "zod";
 
-generator client {
-  provider = "prisma-client-js"
-}
+// Schemas para o Cliente
+export const createClientSchema = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  age: z.number().int().positive(),
+  status: z.enum(["active", "inactive"]),
+  familyProfile: z.string().optional(),
+});
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
+export const updateClientSchema = z.object({
+  name: z.string().optional(),
+  email: z.string().email().optional(),
+  age: z.number().int().positive().optional(),
+  status: z.enum(["active", "inactive"]).optional(),
+  familyProfile: z.string().optional(),
+});
 
-model Client {
-  id            String  @id @default(uuid())
-  name          String
-  email         String  @unique
-  age           Int
-  status        String  @default("active")
-  familyProfile String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
+export const clientParamsSchema = z.object({
+  id: z.string().uuid(),
+});
+
+// Schemas para a Meta
+export const createGoalSchema = z.object({
+  title: z.string(),
+  description: z.string().optional(),
+  targetAmount: z.number().int().positive(),
+  clientId: z.string().uuid(),
+  deadline: z.string().optional(),
+});
+
+export const updateGoalSchema = z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  targetAmount: z.number().int().positive().optional(),
+  clientId: z.string().uuid().optional(),
+  deadline: z.string().optional(),
+});
+
+export const goalParamsSchema = z.object({
+  id: z.string().uuid(),
+});

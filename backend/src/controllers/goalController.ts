@@ -1,5 +1,5 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { goalsDb } from "../utils/inMemoryDatabase";
+import { PrismaClient } from "@prisma/client";
+import { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
 import {
   createGoalSchema,
@@ -7,105 +7,101 @@ import {
   goalParamsSchema,
 } from "../schemas/schemas";
 
-type CreateGoalInput = z.infer<typeof createGoalSchema>;
-type UpdateGoalInput = z.infer<typeof updateGoalSchema>;
-type GoalParamsInput = z.infer<typeof goalParamsSchema>;
+const prisma = new PrismaClient();
 
+// Cria uma meta
 export async function createGoalHandler(
-  request: FastifyRequest<{ Body: CreateGoalInput }>,
+  request: FastifyRequest<{ Body: z.infer<typeof createGoalSchema> }>,
   reply: FastifyReply
 ) {
   try {
     const validatedBody = createGoalSchema.parse(request.body);
-    const goal = goalsDb.create(validatedBody);
+    const goal = await prisma.goal.create({ data: validatedBody });
     return reply.code(201).send(goal);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return reply
-        .code(400)
-        .send({ message: "Validation error", errors: error.issues });
+      return reply.code(400).send({
+        message: "Validation error",
+        errors: error.issues,
+      });
     }
     return reply.code(500).send({ message: "Erro ao criar meta" });
   }
 }
 
+// Lista todas as metas
 export async function getGoalsHandler(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const goals = goalsDb.findMany();
-  return reply.code(200).send(goals);
-}
-
-export async function getGoalHandler(
-  request: FastifyRequest<{ Params: GoalParamsInput }>,
-  reply: FastifyReply
-) {
   try {
-    const { id } = goalParamsSchema.parse(request.params);
-    const goal = goalsDb.findUnique(id);
-
-    if (!goal) {
-      return reply.code(404).send({ message: "Meta não encontrada" });
-    }
-
-    return reply.code(200).send(goal);
+    const goals = await prisma.goal.findMany();
+    return reply.code(200).send(goals);
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return reply
-        .code(400)
-        .send({ message: "Validation error", errors: error.issues });
-    }
-    return reply.code(500).send({ message: "Erro ao buscar meta" });
+    return reply.code(500).send({ message: "Erro ao listar metas" });
   }
 }
 
+// Obtém uma única meta por ID
+export async function getGoalHandler(
+  request: FastifyRequest<{ Params: z.infer<typeof goalParamsSchema> }>,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params;
+    const goal = await prisma.goal.findUnique({
+      where: { id },
+    });
+    if (!goal) {
+      return reply.code(404).send({ message: "Meta não encontrada" });
+    }
+    return reply.code(200).send(goal);
+  } catch (error) {
+    return reply.code(500).send({ message: "Erro ao obter meta" });
+  }
+}
+
+// Atualiza uma meta (PUT)
 export async function updateGoalHandler(
   request: FastifyRequest<{
-    Params: GoalParamsInput;
-    Body: UpdateGoalInput;
+    Params: z.infer<typeof goalParamsSchema>;
+    Body: z.infer<typeof updateGoalSchema>;
   }>,
   reply: FastifyReply
 ) {
   try {
-    const { id } = goalParamsSchema.parse(request.params);
+    const { id } = request.params;
     const validatedBody = updateGoalSchema.parse(request.body);
-
-    const goal = goalsDb.update(id, validatedBody);
-
-    if (!goal) {
-      return reply
-        .code(404)
-        .send({ message: "Meta não encontrada ou erro na atualização" });
-    }
-
+    const goal = await prisma.goal.update({
+      where: { id },
+      data: validatedBody,
+    });
     return reply.code(200).send(goal);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return reply
-        .code(400)
-        .send({ message: "Validation error", errors: error.issues });
+      return reply.code(400).send({
+        message: "Validation error",
+        errors: error.issues,
+      });
     }
-    return reply
-      .code(404)
-      .send({ message: "Meta não encontrada ou erro na atualização" });
+    return reply.code(500).send({ message: "Erro ao atualizar meta" });
   }
 }
 
+// Exclui uma meta (DELETE)
 export async function deleteGoalHandler(
-  request: FastifyRequest<{ Params: GoalParamsInput }>,
+  request: FastifyRequest<{
+    Params: z.infer<typeof goalParamsSchema>;
+  }>,
   reply: FastifyReply
 ) {
   try {
-    const { id } = goalParamsSchema.parse(request.params);
-    goalsDb.delete(id);
+    const { id } = request.params;
+    await prisma.goal.delete({
+      where: { id },
+    });
     return reply.code(204).send();
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return reply
-        .code(400)
-        .send({ message: "Validation error", errors: error.issues });
-    }
-    return reply.code(404).send({ message: "Meta não encontrada" });
+    return reply.code(500).send({ message: "Erro ao deletar meta" });
   }
 }

@@ -1,23 +1,33 @@
 import Fastify from "fastify";
 import { clientRoutes } from "./routes/clientRoutes";
 import { goalRoutes } from "./routes/goalRoutes";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
+import {
+  serializerCompiler,
+  validatorCompiler,
+  ZodTypeProvider,
+} from "fastify-type-provider-zod";
 
-const app = Fastify({
-  logger: true,
-}).withTypeProvider<ZodTypeProvider>();
+const server = Fastify().withTypeProvider<ZodTypeProvider>();
 
-app.register(clientRoutes, { prefix: "/api/clients" });
-app.register(goalRoutes, { prefix: "/api/goals" });
+server.setValidatorCompiler(validatorCompiler);
+server.setSerializerCompiler(serializerCompiler);
 
-const start = async () => {
+server.register(clientRoutes);
+server.register(goalRoutes);
+
+server.get("/health", async (request, reply) => {
+  return reply.code(200).send({ status: "ok" });
+});
+
+async function main() {
   try {
-    await app.listen({ port: 3001 });
-    console.log("Servidor rodando em http://localhost:3001");
+    const port = Number(process.env.PORT) || 3001;
+    await server.listen({ port, host: "0.0.0.0" });
+    console.log(`Servidor rodando em http://localhost:${port}`);
   } catch (err) {
-    app.log.error(err);
+    server.log.error(err);
     process.exit(1);
   }
-};
+}
 
-start();
+main();

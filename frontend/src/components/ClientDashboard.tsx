@@ -1,306 +1,335 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
-interface Client {
+type Client = {
   id: string;
   name: string;
   email: string;
   age: number;
   status: string;
   familyProfile?: string;
-}
+};
 
-const ClientDashboard = () => {
+type Goal = {
+  id: string;
+  title: string;
+  targetAmount: number;
+  clientId: string;
+};
+
+type AllocationResponse = {
+  clientId: string;
+  groups: Array<{
+    group: "Financeiras" | "Imobilizado";
+    items: Array<{
+      code: string;
+      name: string;
+      value: number;
+      deltaPct?: number;
+      color: string;
+    }>;
+  }>;
+};
+
+export default function ClientDashboard() {
   const [clients, setClients] = useState<Client[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [selectedClientId, setSelectedClientId] = useState<string>("");
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [allocations, setAllocations] = useState<AllocationResponse | null>(
+    null
+  );
 
   useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const apiUrl = "http://localhost:3001/clients";
-        const response = await axios.get(apiUrl);
-        setClients(response.data);
-      } catch (err: any) {
-        console.error("Houve um erro ao buscar os clientes!", err);
-        if (axios.isAxiosError(err) && err.message === "Network Error") {
-          setError(
-            "Erro de conexão. Por favor, verifique se o servidor backend está em execução na porta 3001."
-          );
-        } else if (err.response) {
-          setError(
-            `Erro do servidor: ${err.response.status} - ${err.response.statusText}`
-          );
-        } else {
-          setError("Não foi possível carregar os dados dos clientes.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchClients();
+    axios
+      .get<Client[]>("http://localhost:3001/clients")
+      .then((res) => {
+        setClients(res.data);
+        if (res.data.length) setSelectedClientId(res.data[0].id);
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar clientes:", err);
+      });
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-400">Carregando...</p>
-      </div>
-    );
+  useEffect(() => {
+    axios
+      .get<Goal[]>("http://localhost:3001/goals")
+      .then((res) => setGoals(res.data))
+      .catch((err) => console.error("Erro ao buscar metas:", err));
+  }, []);
+
+  const selectedClient = clients.find((c) => c.id === selectedClientId);
+  const clientGoals = useMemo(
+    () => goals.filter((g) => g.clientId === selectedClientId),
+    [goals, selectedClientId]
+  );
+
+  // Buscar alocações sempre que o cliente selecionado mudar
+  useEffect(() => {
+    if (!selectedClientId) return;
+    fetchAllocations();
+  }, [selectedClientId]);
+
+  function fetchAllocations() {
+    axios
+      .get<AllocationResponse>(
+        `http://localhost:3001/allocations/${selectedClientId}`
+      )
+      .then((res) => setAllocations(res.data))
+      .catch((err) => console.error("Erro ao buscar alocações:", err));
   }
 
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen text-center p-4">
-        <p className="text-red-500 font-semibold">{error}</p>
-      </div>
-    );
-  }
+  const totalAllocated = useMemo(() => {
+    if (!allocations) return 0;
+    return allocations.groups.reduce((sum, group) => {
+      const groupSum = group.items.reduce(
+        (acc, it) => acc + (it.value || 0),
+        0
+      );
+      return sum + groupSum;
+    }, 0);
+  }, [allocations]);
 
   return (
-    <div className="flex flex-col gap-6 p-8 bg-gray-900 min-h-screen text-white">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Clientes</h2>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center cursor-pointer">
-            ...
-          </div>
-          <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center cursor-pointer">
-            ...
-          </div>
-          <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center cursor-pointer">
-            ...
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gray-800 rounded-xl p-6 shadow-md">
-          <h3 className="text-lg font-medium mb-4">
-            Alinhamento com planejamento
-          </h3>
-
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-400">Superior a 90%</span>
-              <div className="w-full h-4 bg-gray-600 rounded-full overflow-hidden">
-                <div className="w-[14%] h-full bg-green-500 rounded-full"></div>
-              </div>
-              <span className="text-sm font-semibold text-green-500">14%</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-400">90% a 70%</span>
-              <div className="w-full h-4 bg-gray-600 rounded-full overflow-hidden">
-                <div className="w-[20%] h-full bg-yellow-500 rounded-full"></div>
-              </div>
-              <span className="text-sm font-semibold text-yellow-500">20%</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-400">70% a 50%</span>
-              <div className="w-full h-4 bg-gray-600 rounded-full overflow-hidden">
-                <div className="w-[45%] h-full bg-orange-500 rounded-full"></div>
-              </div>
-              <span className="text-sm font-semibold text-orange-500">45%</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-400">Inferior a 50%</span>
-              <div className="w-full h-4 bg-gray-600 rounded-full overflow-hidden">
-                <div className="w-[21%] h-full bg-red-500 rounded-full"></div>
-              </div>
-              <span className="text-sm font-semibold text-red-500">21%</span>
-            </div>
-          </div>
+    <div className="dashboard">
+      <div className="dashboardContainer">
+        <div className="dashboardHeader">
+          <h1 className="dashboardTitle">Dashboard</h1>
+          <button
+            className="refreshButton"
+            onClick={() => window.location.reload()}
+          >
+            Atualizar
+          </button>
         </div>
 
-        <div className="bg-gray-800 rounded-xl p-6 shadow-md flex flex-col items-center justify-center text-center">
-          <h3 className="text-lg font-medium mb-4">
-            Clientes com planejamento
-          </h3>
-          <div className="relative w-32 h-32 flex items-center justify-center">
-            <svg
-              viewBox="0 0 100 100"
-              className="absolute top-0 left-0 w-full h-full"
-            >
-              <circle
-                cx="50"
-                cy="50"
-                r="45"
-                stroke="#374151"
-                strokeWidth="10"
-                fill="none"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="45"
-                stroke="#22c55e"
-                strokeWidth="10"
-                fill="none"
-                strokeDasharray="282.7" // 90 * Math.PI * 2
-                strokeDashoffset="70.675" // 282.7 * (1 - 0.75)
-                strokeLinecap="round"
-                transform="rotate(-90 50 50)"
-              />
-            </svg>
-            <span className="text-3xl font-bold text-white">75%</span>
-          </div>
-          <p className="text-gray-400 mt-2">219 clientes</p>
-        </div>
-
-        <div className="bg-gray-800 rounded-xl p-6 shadow-md">
-          <h3 className="text-lg font-medium mb-4">
-            Perfis com seguro pelo total
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm">Com filho</span>
-              <div className="w-24 h-24 relative flex items-center justify-center">
-                <svg
-                  viewBox="0 0 100 100"
-                  className="absolute top-0 left-0 w-full h-full"
-                >
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    stroke="#374151"
-                    strokeWidth="10"
-                    fill="none"
-                  />
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    stroke="#3b82f6"
-                    strokeWidth="10"
-                    fill="none"
-                    strokeDasharray="282.7"
-                    strokeDashoffset="113.08" // 282.7 * (1 - 0.6)
-                    transform="rotate(-90 50 50)"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <span className="text-lg font-bold">60%</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm">Solteiro</span>
-              <div className="w-24 h-24 relative flex items-center justify-center">
-                <svg
-                  viewBox="0 0 100 100"
-                  className="absolute top-0 left-0 w-full h-full"
-                >
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    stroke="#374151"
-                    strokeWidth="10"
-                    fill="none"
-                  />
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    stroke="#8b5cf6"
-                    strokeWidth="10"
-                    fill="none"
-                    strokeDasharray="282.7"
-                    strokeDashoffset="141.35" // 282.7 * (1 - 0.5)
-                    transform="rotate(-90 50 50)"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <span className="text-lg font-bold">50%</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm">Com dependentes</span>
-              <div className="w-24 h-24 relative flex items-center justify-center">
-                <svg
-                  viewBox="0 0 100 100"
-                  className="absolute top-0 left-0 w-full h-full"
-                >
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    stroke="#374151"
-                    strokeWidth="10"
-                    fill="none"
-                  />
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    stroke="#ec4899"
-                    strokeWidth="10"
-                    fill="none"
-                    strokeDasharray="282.7"
-                    strokeDashoffset="169.62" // 282.7 * (1 - 0.4)
-                    transform="rotate(-90 50 50)"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <span className="text-lg font-bold">40%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-gray-800 rounded-xl p-6 shadow-md mt-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-medium">Atualização do planejamento</h3>
-          <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center cursor-pointer">
-              ...
-            </span>
-            <span className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center cursor-pointer">
-              ...
-            </span>
-          </div>
-        </div>
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b border-gray-700">
-              <th className="py-2 px-4 text-sm font-medium text-gray-400">
-                Nome
-              </th>
-              <th className="py-2 px-4 text-sm font-medium text-gray-400">
-                Patrimônio
-              </th>
-              <th className="py-2 px-4 text-sm font-medium text-gray-400">
-                Última atualização
-              </th>
-              <th className="py-2 px-4 text-sm font-medium text-gray-400">
-                Ações
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {clients.map((client) => (
-              <tr
-                key={client.id}
-                className="border-b border-gray-700 hover:bg-gray-700"
-              >
-                <td className="py-4 px-4 flex items-center">
-                  <div className="w-8 h-8 rounded-full bg-gray-500 mr-3"></div>
-                  {client.name}
-                </td>
-                <td className="py-4 px-4 text-gray-400">R$ --</td>
-                <td className="py-4 px-4 text-red-500 font-semibold">
-                  + 6 meses
-                </td>
-                <td className="py-4 px-4">...</td>
-              </tr>
+        <div className="filterRow">
+          <label className="filterLabel">Cliente:</label>
+          <select
+            className="select"
+            value={selectedClientId}
+            onChange={(e) => setSelectedClientId(e.target.value)}
+          >
+            {clients.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
             ))}
-          </tbody>
-        </table>
+          </select>
+        </div>
+
+        {selectedClient ? (
+          <>
+            <div className="card mb-6">
+              <p className="kpiTitle">Total Alocado</p>
+              <div className="headlineValue">
+                {new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(totalAllocated)}
+                <span className="headlineDelta">+12,37%</span>
+              </div>
+            </div>
+
+            <div className="cardsGrid3Spaced">
+              <div className="card">
+                <p className="cardLabel">Nome</p>
+                <p className="cardValue">{selectedClient.name}</p>
+              </div>
+              <div className="card">
+                <p className="cardLabel">E-mail</p>
+                <p className="cardValue font-normal">{selectedClient.email}</p>
+              </div>
+              <div className="card">
+                <p className="cardLabel">Status</p>
+                <p className="cardValue font-normal">{selectedClient.status}</p>
+              </div>
+            </div>
+
+            <div className="cardsGrid3">
+              <div className="card">
+                <p className="cardLabel">Perfil</p>
+                <p className="cardValue font-normal">Conservador</p>
+              </div>
+              <div className="card">
+                <p className="cardLabel">Renda desejada/mês</p>
+                <p className="cardValue font-normal">
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(8200)}
+                </p>
+              </div>
+              <div className="card">
+                <p className="cardLabel">Aporte anual</p>
+                <p className="cardValue font-normal">
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(100000)}
+                </p>
+              </div>
+            </div>
+
+            <div className="section">
+              <h2 className="sectionTitle">Metas do cliente</h2>
+              {clientGoals.length ? (
+                <div className="cardsGrid3">
+                  {clientGoals.map((goal) => (
+                    <div key={goal.id} className="card">
+                      <p className="cardLabel">Meta</p>
+                      <p className="cardValue font-normal">{goal.title}</p>
+                      <p className="cardLabel mt-2">Objetivo</p>
+                      <p className="cardValue font-normal">
+                        {new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(goal.targetAmount)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="muted">
+                  Nenhuma meta encontrada para este cliente.
+                </p>
+              )}
+            </div>
+
+            <div className="section">
+              <h2 className="sectionTitle">Perfil do cliente</h2>
+              <div className="cardsGrid2">
+                <div className="card">
+                  <p className="cardLabel">Idade</p>
+                  <p className="cardValue font-normal">
+                    {selectedClient.age} anos
+                  </p>
+                </div>
+                <div className="card">
+                  <p className="cardLabel">Perfil Familiar</p>
+                  <p className="cardValue font-normal">
+                    {selectedClient.familyProfile ?? "—"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="section allocationCard">
+              <div className="allocationHeader">
+                <p className="allocationDate">Data da Alocação: 08/05/2025</p>
+                <button className="refreshButton" onClick={fetchAllocations}>
+                  Atualizar
+                </button>
+              </div>
+
+              <div className="assetGroups">
+                {allocations?.groups.map((group) => (
+                  <div key={group.group}>
+                    <div
+                      className={`groupPill ${
+                        group.group === "Imobilizado" ? "groupPill--imob" : ""
+                      }`}
+                    >
+                      {group.group}
+                    </div>
+                    <div className="assetGrid">
+                      {group.items.map((it) => (
+                        <div
+                          key={`${group.group}-${it.code}-${it.name}`}
+                          className="assetCard assetCard--compact"
+                        >
+                          <div className="assetHeader">
+                            <div
+                              className="assetIcon"
+                              style={{ background: it.color }}
+                            >
+                              {it.code}
+                            </div>
+                            <div>
+                              <p className="assetName assetName--small">
+                                {it.name}
+                              </p>
+                              <p className="assetValue assetValue--tight">
+                                {new Intl.NumberFormat("pt-BR", {
+                                  style: "currency",
+                                  currency: "BRL",
+                                }).format(it.value)}
+                              </p>
+                              {typeof it.deltaPct === "number" && (
+                                <p
+                                  className={`assetDelta assetDelta--tiny ${
+                                    it.deltaPct >= 0
+                                      ? "deltaPositive"
+                                      : "deltaNegative"
+                                  }`}
+                                >
+                                  {it.deltaPct >= 0 ? "+" : ""}
+                                  {it.deltaPct.toFixed(2)}%
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="section indicatorGrid">
+              <div className="indicatorItem">
+                <p className="cardLabel">Aposentadoria</p>
+                <div className="progressTrack">
+                  <div className="progressBar" style={{ width: "63%" }} />
+                </div>
+                <p className="muted mt-2">63 anos</p>
+              </div>
+              <div className="indicatorItem">
+                <p className="cardLabel">Renda desejada/mês</p>
+                <p className="cardValue font-normal">
+                  R$ {(8200).toLocaleString("pt-BR")}
+                </p>
+              </div>
+              <div className="indicatorItem">
+                <p className="cardLabel">Target rendimento</p>
+                <p className="cardValue font-normal">IPCA + 3,2%</p>
+              </div>
+            </div>
+
+            <div className="chartsGrid">
+              <div className="chartCard">
+                <p className="cardLabel">Comparação de Alocações</p>
+                <div className="progressTrack mt-3">
+                  <div className="progressBar" style={{ width: "18%" }} />
+                </div>
+                <p className="muted mt-2">18%</p>
+              </div>
+              <div className="chartCard">
+                <p className="cardLabel">Patrimônio - Visão geral</p>
+                <div className="progressTrack mt-3">
+                  <div className="progressBar" style={{ width: "70%" }} />
+                </div>
+                <p className="muted mt-2">70% meta do ano</p>
+              </div>
+              <div className="chartCard">
+                <p className="cardLabel">KPI Liquidez carteira</p>
+                <div className="barChart">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="bar"
+                      style={{ height: `${30 + (i % 4) * 15}px` }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <p className="muted">Nenhum cliente selecionado.</p>
+        )}
       </div>
     </div>
   );
-};
-
-export default ClientDashboard;
+}

@@ -1,0 +1,220 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer components {
+  /* Sidebar */
+  .sidebar {
+    @apply w-64 bg-gray-900 text-gray-300 flex flex-col;
+  }
+  .sidebarInner {
+    @apply h-screen sticky top-0 p-6 flex flex-col;
+  }
+  .sidebarHeader {
+    @apply mb-8 flex items-center justify-center;
+  }
+  .sidebarLogo {
+    @apply text-xl font-bold text-orange-500 tracking-wide;
+  }
+  .navList {
+    @apply flex-1 space-y-1;
+  }
+  .navItem {
+    @apply flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer text-gray-300 hover:bg-gray-800;
+  }
+  .navItemActive {
+    @apply bg-gray-800 text-white border border-gray-700;
+  }
+  .navIcon {
+    @apply w-5 h-5 flex items-center justify-center text-gray-400;
+  }
+  .navLabel {
+    @apply text-sm font-medium;
+  }
+  .sidebarFooter {
+    @apply mt-8 text-xs text-gray-500;
+  }
+  .dashboard {
+    @apply w-full;
+  }
+  .dashboardContainer {
+    @apply max-w-[1100px] mx-auto;
+  }
+  .dashboardHeader {
+    @apply flex items-center justify-between mb-6;
+  }
+  .dashboardTitle {
+    @apply text-2xl font-bold;
+  }
+  .refreshButton {
+    @apply bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md;
+  }
+
+  .filterRow {
+    @apply mb-6 flex items-center gap-3;
+  }
+  .filterLabel {
+    @apply text-sm text-gray-400;
+  }
+  .select {
+    @apply bg-gray-800 text-white p-2 rounded-md;
+  }
+
+  .cardsGrid3 {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-4;
+  }
+  .cardsGrid3Spaced {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-4 mb-6;
+  }
+
+  .cardsGrid2 {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+  }
+
+  .card {
+    @apply bg-gray-800 p-4 rounded-lg;
+  }
+  .cardLabel {
+    @apply text-gray-400 text-sm;
+  }
+  .cardValue {
+    @apply text-lg font-semibold;
+  }
+
+  .kpiTitle {
+    @apply text-gray-400 text-sm;
+  }
+  .kpiValue {
+    @apply text-3xl font-extrabold;
+  }
+  .headlineValue {
+    @apply text-[28px] font-extrabold tracking-tight;
+  }
+  .kpiDelta {
+    @apply ml-2 text-xs text-blue-400;
+  }
+  .headlineDelta {
+    @apply text-xs text-blue-400 ml-2;
+  }
+  .muted {
+    @apply text-gray-400;
+  }
+
+  .section {
+    @apply mt-6;
+  }
+  .sectionTitle {
+    @apply text-xl font-semibold mb-4;
+  }
+
+  .allocationSection {
+    @apply bg-gray-900/50 p-4 rounded-xl border border-gray-800;
+  }
+  .allocationCard {
+    @apply bg-[#0f0f10] border border-gray-800 rounded-2xl p-5;
+  }
+  .allocationHeader {
+    @apply flex items-center justify-between;
+  }
+  .allocationDate {
+    @apply text-xs text-gray-400;
+  }
+  .sectionCaption {
+    @apply text-[11px] text-gray-400 uppercase mb-2;
+  }
+  .groupPill {
+    @apply inline-flex items-center text-[11px] px-2 py-1 rounded-md bg-gray-900 border border-gray-700;
+  }
+  .groupPill--imob {
+    @apply relative;
+  }
+  .groupPill--imob::after {
+    content: "";
+    @apply absolute -bottom-1 left-0 right-0 h-[2px] bg-pink-500 rounded-full;
+  }
+  .assetCard--compact {
+    @apply bg-[#1b1b1d] border border-gray-700 rounded-xl px-3 py-2;
+  }
+  .assetName--small {
+    @apply text-[12px] text-gray-300;
+  }
+  .assetValue--tight {
+    @apply text-[13px] font-semibold;
+  }
+  .assetDelta--tiny {
+    @apply text-[11px];
+  }
+  .sectionHeader {
+    @apply flex items-center justify-between mb-4;
+  }
+  .sectionSubtitle {
+    @apply text-sm text-gray-400;
+  }
+  .assetGroups {
+    @apply space-y-4;
+  }
+  .assetGroupTitle {
+    @apply text-sm text-gray-300 uppercase;
+  }
+  .assetGrid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3;
+  }
+  .assetCard {
+    @apply bg-gray-800 rounded-lg p-3 relative;
+  }
+  .assetIcon {
+    @apply w-8 h-8 rounded-full flex items-center justify-center text-white text-sm;
+  }
+  .assetHeader {
+    @apply flex items-center gap-3;
+  }
+  .assetName {
+    @apply text-sm font-medium;
+  }
+  .assetValue {
+    @apply mt-1 font-semibold;
+  }
+  .assetDelta {
+    @apply text-xs;
+  }
+  .deltaPositive {
+    @apply text-blue-400;
+  }
+  .deltaNegative {
+    @apply text-red-400;
+  }
+
+  .indicatorGrid {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-4;
+  }
+  .indicatorItem {
+    @apply bg-gray-800 p-4 rounded-lg;
+  }
+  .progressTrack {
+    @apply w-full h-2 bg-gray-700 rounded-full overflow-hidden mt-2;
+  }
+  .progressBar {
+    @apply h-2 bg-orange-500;
+  }
+
+  .chartsGrid {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-4 mt-4;
+  }
+  .chartCard {
+    @apply bg-gray-800 p-4 rounded-lg;
+  }
+  .barChart {
+    @apply h-64 bg-gray-900 rounded-md border border-gray-700 flex items-end gap-2 p-3;
+  }
+  .bar {
+    @apply w-6 bg-blue-500 rounded-sm;
+  }
+}

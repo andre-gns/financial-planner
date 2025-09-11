@@ -4,6 +4,7 @@ import ClientDashboard from "./components/ClientDashboard";
 import GoalList from "./components/GoalList";
 import ProjectionPage from "./components/ProjectionPage";
 import HistoryPage from "./components/HistoryPage";
+import ClientsPage from "./components/ClientsPage";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -17,7 +18,7 @@ function App() {
       case "historico":
         return <HistoryPage />;
       case "clientes":
-        return <ClientDashboard />;
+        return <ClientsPage />;
       case "metas":
         return <GoalList />;
       default:
@@ -26,7 +27,7 @@ function App() {
   };
 
   return (
-    <div className="flex bg-gray-900 min-h-screen text-white">
+    <div className="flex bg-black min-h-screen text-white">
       <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
       <div className="flex-1 p-8">{renderContent()}</div>
     </div>

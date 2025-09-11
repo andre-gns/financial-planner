@@ -91,8 +91,8 @@ export default function ClientDashboard() {
   }, [allocations]);
 
   return (
-    <div className="dashboard">
-      <div className="dashboardContainer">
+    <div className="dashboard bg-black min-h-screen">
+      <div className="dashboardContainer bg-black">
         <div className="dashboardHeader">
           <h1 className="dashboardTitle">Dashboard</h1>
           <button
@@ -120,97 +120,14 @@ export default function ClientDashboard() {
 
         {selectedClient ? (
           <>
-            <div className="card mb-6">
-              <p className="kpiTitle">Total Alocado</p>
-              <div className="headlineValue">
+            <div className="card mb-6 bg-transparent border border-gray-700 p-3">
+              <p className="kpiTitle text-sm">Total Alocado</p>
+              <div className="headlineValue text-xl">
                 {new Intl.NumberFormat("pt-BR", {
                   style: "currency",
                   currency: "BRL",
                 }).format(totalAllocated)}
-                <span className="headlineDelta">+12,37%</span>
-              </div>
-            </div>
-
-            <div className="cardsGrid3Spaced">
-              <div className="card">
-                <p className="cardLabel">Nome</p>
-                <p className="cardValue">{selectedClient.name}</p>
-              </div>
-              <div className="card">
-                <p className="cardLabel">E-mail</p>
-                <p className="cardValue font-normal">{selectedClient.email}</p>
-              </div>
-              <div className="card">
-                <p className="cardLabel">Status</p>
-                <p className="cardValue font-normal">{selectedClient.status}</p>
-              </div>
-            </div>
-
-            <div className="cardsGrid3">
-              <div className="card">
-                <p className="cardLabel">Perfil</p>
-                <p className="cardValue font-normal">Conservador</p>
-              </div>
-              <div className="card">
-                <p className="cardLabel">Renda desejada/mês</p>
-                <p className="cardValue font-normal">
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(8200)}
-                </p>
-              </div>
-              <div className="card">
-                <p className="cardLabel">Aporte anual</p>
-                <p className="cardValue font-normal">
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(100000)}
-                </p>
-              </div>
-            </div>
-
-            <div className="section">
-              <h2 className="sectionTitle">Metas do cliente</h2>
-              {clientGoals.length ? (
-                <div className="cardsGrid3">
-                  {clientGoals.map((goal) => (
-                    <div key={goal.id} className="card">
-                      <p className="cardLabel">Meta</p>
-                      <p className="cardValue font-normal">{goal.title}</p>
-                      <p className="cardLabel mt-2">Objetivo</p>
-                      <p className="cardValue font-normal">
-                        {new Intl.NumberFormat("pt-BR", {
-                          style: "currency",
-                          currency: "BRL",
-                        }).format(goal.targetAmount)}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="muted">
-                  Nenhuma meta encontrada para este cliente.
-                </p>
-              )}
-            </div>
-
-            <div className="section">
-              <h2 className="sectionTitle">Perfil do cliente</h2>
-              <div className="cardsGrid2">
-                <div className="card">
-                  <p className="cardLabel">Idade</p>
-                  <p className="cardValue font-normal">
-                    {selectedClient.age} anos
-                  </p>
-                </div>
-                <div className="card">
-                  <p className="cardLabel">Perfil Familiar</p>
-                  <p className="cardValue font-normal">
-                    {selectedClient.familyProfile ?? "—"}
-                  </p>
-                </div>
+                <span className="headlineDelta text-sm">+12,37%</span>
               </div>
             </div>
 

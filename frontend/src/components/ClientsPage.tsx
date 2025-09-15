@@ -17,12 +17,22 @@ const MOCK_ROWS: ClientRow[] = [
 
 export default function ClientsPage() {
   const formatBRL = (v: number) =>
-    new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
+    new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(v);
 
-  const gauge = useMemo(
-    () => ({ percent: 75, label: "219 clientes" }),
-    []
-  );
+  const gauge = useMemo(() => {
+    // percent atual e variação vs período anterior (mock)
+    const percent = 75;
+    const previousPercent = 69; // substitua quando houver dados reais
+    const trend = percent - previousPercent; // positivo: subindo, negativo: caindo
+    return {
+      percent,
+      label: "219 clientes",
+      trend,
+    };
+  }, []);
 
   return (
     <div className="dashboardContainer clientsGrid">
@@ -30,13 +40,23 @@ export default function ClientsPage() {
         <div className="clientsCard">
           <p className="clientsCardTitle">Alinhamento com planejamento</p>
           <div className="stackBars">
-            {[{l:"Superior a 90%",c:"#22c55e",p:14},{l:"90% a 70%",c:"#eab308",p:20},{l:"70% a 50%",c:"#f97316",p:45},{l:"Inferior a 50%",c:"#ef4444",p:21}].map((r)=> (
+            {[
+              { l: "Superior a 90%", c: "#22c55e", p: 14 },
+              { l: "90% a 70%", c: "#eab308", p: 20 },
+              { l: "70% a 50%", c: "#f97316", p: 45 },
+              { l: "Inferior a 50%", c: "#ef4444", p: 21 },
+            ].map((r) => (
               <div className="stackRow" key={r.l}>
                 <span className="stackLabel">{r.l}</span>
                 <div className="stackTrack">
-                  <div className="stackFill" style={{ width: `${r.p}%`, background: r.c }} />
+                  <div
+                    className="stackFill"
+                    style={{ width: `${r.p}%`, background: r.c }}
+                  />
                 </div>
-                <span className="stackLabel" style={{width:32}}>{r.p}%</span>
+                <span className="stackLabel" style={{ width: 32 }}>
+                  {r.p}%
+                </span>
               </div>
             ))}
           </div>
@@ -56,8 +76,14 @@ export default function ClientsPage() {
               </div>
               <div className="tdWealth">{formatBRL(row.wealth)}</div>
               <div className="tdUpdate">
-                <span className={`badge ${row.monthsDelta >= 0 ? "badgeNeg" : "badgePos"}`}>
-                  {row.monthsDelta >= 0 ? `+ ${row.monthsDelta} meses` : ` ${row.monthsDelta} meses`}
+                <span
+                  className={`badge ${
+                    row.monthsDelta >= 0 ? "badgeNeg" : "badgePos"
+                  }`}
+                >
+                  {row.monthsDelta >= 0
+                    ? `+ ${row.monthsDelta} meses`
+                    : ` ${row.monthsDelta} meses`}
                 </span>
               </div>
             </div>
@@ -74,27 +100,95 @@ export default function ClientsPage() {
         <div className="clientsCard">
           <p className="clientsCardTitle">Clientes com planejamento</p>
           <div className="gaugeWrap">
-            <div className="text-center">
-              <div className="gaugeValue">{gauge.percent}%</div>
-              <div className="gaugeSub">{gauge.label}</div>
+            <div className="gauge">
+              <svg
+                className="gaugeSvg"
+                viewBox="0 0 100 100"
+                aria-label="progresso clientes com planejamento"
+              >
+                <defs>
+                  <linearGradient
+                    id="gaugeGrad"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
+                    <stop offset="0%" stopColor="#22c55e" />
+                    <stop offset="100%" stopColor="#a3e635" />
+                  </linearGradient>
+                </defs>
+                <circle className="gaugeBg" cx="50" cy="50" r="42" />
+                <circle
+                  className="gaugeFg"
+                  cx="50"
+                  cy="50"
+                  r="42"
+                  strokeDasharray={`${
+                    Math.max(0, Math.min(100, gauge.percent)) * 2.638
+                  }, 999`}
+                />
+              </svg>
+              <div className="gaugeCenter">
+                <div
+                  className={`trendArrow ${
+                    gauge.trend >= 0 ? "trendUp" : "trendDown"
+                  }`}
+                  aria-hidden
+                />
+                <div className="gaugeText">
+                  <div className="gaugeValue">{gauge.percent}%</div>
+                  <div className="gaugeSub">{gauge.label}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <div className="clientsCard space-y-4">
-          {[{p:60,t:"Com filho"},{p:50,t:"Solteiro"},{p:40,t:"Com dependentes"}].map((d)=> (
-            <div key={d.t} className="bg-gray-900 rounded-xl p-4 flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 opacity-80" />
-              <div>
-                <div className="text-blue-400 text-lg font-bold">{d.p}%</div>
-                <div className="text-gray-300 text-sm">{d.t}</div>
+          <p className="clientsCardTitle">
+            Perfis com seguro pelo total de clientes
+          </p>
+          {[
+            { p: 60, t: "Com filho", prev: 52 },
+            { p: 50, t: "Solteiro", prev: 55 },
+            { p: 40, t: "Com dependentes", prev: 38 },
+          ].map((d) => {
+            const trend = d.p - d.prev;
+            const dash = `${Math.max(0, Math.min(100, d.p)) * 2.638}, 999`;
+            return (
+              <div
+                key={d.t}
+                className="bg-gray-900 rounded-xl p-4 flex items-center gap-4"
+              >
+                <div className="miniGauge">
+                  <svg className="miniGaugeSvg" viewBox="0 0 100 100">
+                    <circle className="gaugeBg" cx="50" cy="50" r="42" />
+                    <circle
+                      className="miniGaugeFg"
+                      cx="50"
+                      cy="50"
+                      r="42"
+                      strokeDasharray={dash}
+                    />
+                  </svg>
+                  <div className="miniGaugeCenter">
+                    <div
+                      className={`trendArrow ${
+                        trend >= 0 ? "trendUp" : "trendDown"
+                      }`}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="text-blue-400 text-lg font-bold">{d.p}%</div>
+                  <div className="text-gray-300 text-sm">{d.t}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
   );
 }
-
-

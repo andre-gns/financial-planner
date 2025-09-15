@@ -95,12 +95,6 @@ export default function ClientDashboard() {
       <div className="dashboardContainer bg-black">
         <div className="dashboardHeader">
           <h1 className="dashboardTitle">Dashboard</h1>
-          <button
-            className="refreshButton"
-            onClick={() => window.location.reload()}
-          >
-            Atualizar
-          </button>
         </div>
 
         <div className="filterRow">

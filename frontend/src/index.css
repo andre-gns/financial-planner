@@ -11,33 +11,199 @@ body {
 }
 
 @layer components {
+  /* Projection page */
+  .projectionContainer {
+    @apply max-w-5xl mx-auto pt-8 space-y-6;
+  }
+  .kpiRow {
+    @apply grid grid-cols-1 md:grid-cols-4 gap-4 items-end;
+  }
+  .metricBlock {
+    @apply md:col-span-1;
+  }
+  .metricValue {
+    @apply text-2xl font-semibold;
+  }
+  .kpiCard {
+    @apply bg-[#0f0f0f] border border-gray-800 rounded-xl p-3;
+  }
+  .kpiLabel {
+    @apply text-sm text-gray-300 mb-2;
+  }
+  .kpiBar {
+    @apply h-8 bg-gray-900 border border-gray-700 rounded-md overflow-hidden;
+  }
+  .kpiBar > div {
+    @apply h-full bg-blue-500/60;
+  }
+  .kpiBar--blue > div {
+    @apply bg-indigo-400/70;
+  }
+  .kpiBar--violet > div {
+    @apply bg-fuchsia-500/60;
+  }
+  .bigChartCard {
+    @apply bg-[#0e0e0e] border border-gray-800 rounded-2xl p-4;
+  }
+  .bigChartArea {
+    @apply mt-2 bg-[#0b0b0b] rounded-xl border border-gray-800 p-3;
+  }
+  .chipRow {
+    @apply mt-3 flex items-center gap-3;
+  }
+  .chipRow--center {
+    @apply justify-center;
+  }
+  .chip {
+    @apply px-4 py-2 rounded-full bg-blue-900/40 border border-blue-700/40 text-blue-200 text-xs;
+  }
+  .chip--hollow {
+    @apply bg-transparent text-gray-300 border-gray-600;
+  }
+  .chip--gold {
+    @apply bg-yellow-900/30 text-yellow-300 border-yellow-700/40;
+  }
+  .timelineCard {
+    @apply bg-[#0e0e0e] border border-gray-800 rounded-2xl p-4;
+  }
+  .timelineSvg {
+    @apply w-full;
+  }
+  .timelineHeader {
+    @apply text-green-300 font-semibold mb-2;
+  }
+  .tlTitle {
+    @apply text-xs;
+  }
+  .tlTitle--green {
+    @apply fill-green-400;
+  }
+  .tlTitle--red {
+    @apply fill-red-400;
+  }
+  .tlLegend {
+    @apply fill-gray-400 text-[11px];
+  }
+  .tlYear {
+    @apply fill-gray-200 text-sm;
+  }
+  .tlAge {
+    @apply fill-gray-400 text-xs;
+  }
+  .tlDot--green {
+    fill: #22c55e;
+  }
+  .tlDot--red {
+    fill: #ef4444;
+  }
+  .tlBubble {
+    @apply text-[11px];
+  }
+  .tlBubble--green {
+    @apply fill-green-300;
+  }
+  .tlBubble--red {
+    @apply fill-red-400;
+  }
+  .tlAxisDashed {
+    stroke: #2a2a2a;
+    stroke-dasharray: 6 6;
+  }
+  .tlMinorTick {
+    stroke: #2a2a2a;
+    stroke-width: 1;
+  }
+  .tlMajorTick {
+    stroke: #3f3f46;
+    stroke-width: 2;
+  }
+  .movementSection {
+    @apply space-y-3;
+  }
+  .movementFilters {
+    @apply flex items-center gap-2;
+  }
+  .pill {
+    @apply text-[11px] px-3 py-1 rounded-full bg-gray-900 border border-gray-700 text-gray-300;
+  }
+  .pill--light {
+    @apply bg-white/5 text-white;
+  }
+  .movementGrid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+  }
+  .movementCard {
+    @apply bg-[#0e0e0e] border border-gray-800 rounded-2xl p-4 flex items-center justify-between;
+  }
+  .movementCard--ok {
+    @apply border-green-700/60;
+  }
+  .movementCard--down {
+    @apply border-red-700/60;
+  }
+  .movementTitle {
+    @apply text-sm text-gray-200 font-semibold;
+  }
+  .movementMeta {
+    @apply text-xs text-gray-400;
+  }
+  .movementValue {
+    @apply text-sm font-semibold text-gray-200;
+  }
+  .movementValue.down {
+    @apply text-red-400;
+  }
+  .movementValue.up {
+    @apply text-green-400;
+  }
+  .insuranceGrid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+  }
+  .insuranceCard {
+    @apply bg-[#0e0e0e] border border-gray-800 rounded-2xl p-4 relative;
+  }
+  .insuranceTitle {
+    @apply text-gray-200 font-semibold;
+  }
+  .insuranceMeta {
+    @apply text-xs text-gray-400 mt-1;
+  }
+  .insuranceValue {
+    @apply absolute right-4 bottom-4 text-pink-400 font-semibold;
+  }
+}
+
+@layer components {
   /* Sidebar */
   .sidebar {
-    @apply w-64 bg-black text-gray-300 flex flex-col;
+    @apply w-64 bg-[#0f0f0f] text-gray-300 flex flex-col rounded-2xl border border-gray-800 overflow-hidden;
   }
   .sidebarInner {
-    @apply h-screen sticky top-0 p-6 flex flex-col;
+    @apply h-screen sticky top-0 p-5 flex flex-col;
   }
   .sidebarHeader {
     @apply mb-8 flex items-center justify-center;
   }
-  .sidebarLogo {
-    @apply text-xl font-bold text-orange-500 tracking-wide;
+  .brandPill {
+    @apply inline-flex items-center px-4 py-1 rounded-full border border-orange-700/50 text-orange-300 bg-gradient-to-br from-[#1a1a1a] to-[#111] shadow-sm;
   }
   .navList {
-    @apply flex-1 space-y-1 border-r border-gray-800;
+    @apply flex-1 space-y-1;
   }
   .navItem {
-    @apply flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer text-gray-300 hover:bg-gray-800;
+    @apply flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer text-gray-300 hover:bg-gray-800/60 justify-between;
   }
   .navItemActive {
-    @apply bg-gray-800 text-white border border-gray-700;
+    @apply bg-gray-900 text-white border border-gray-700;
   }
   .navIcon {
     @apply w-5 h-5 flex items-center justify-center text-gray-400;
   }
   .navLabel {
     @apply text-sm font-medium;
+  }
+  .navChevron {
+    @apply ml-auto text-gray-500;
   }
   .sidebarFooter {
     @apply mt-8 text-xs text-gray-500;
@@ -116,10 +282,10 @@ body {
   }
 
   .allocationSection {
-    @apply bg-gray-900/50 p-4 rounded-xl border border-gray-800;
+    @apply bg-black/50 p-4 rounded-xl border border-gray-800;
   }
   .allocationCard {
-    @apply bg-[#0f0f10] border border-gray-800 rounded-2xl p-5;
+    @apply bg-[#0000] border border-gray-800 rounded-2xl p-5;
   }
   .allocationHeader {
     @apply flex items-center justify-between;
@@ -249,11 +415,80 @@ body {
   .gaugeWrap {
     @apply flex items-center justify-center h-44 bg-gradient-to-br from-[#101010] to-[#0c0c0c] rounded-2xl border border-gray-800;
   }
+  .gauge {
+    @apply relative w-40 h-40 flex items-center justify-center;
+  }
+  .gaugeSvg {
+    @apply absolute inset-0 w-full h-full;
+    transform: rotate(-90deg);
+  }
+  .gaugeBg {
+    fill: none;
+    stroke: #1f2937; /* gray-800 */
+    stroke-width: 10;
+  }
+  .gaugeFg {
+    fill: none;
+    stroke: url(#gaugeGrad);
+    stroke-linecap: round;
+    stroke-width: 10;
+    transition: stroke-dasharray 400ms ease;
+  }
+  .gaugeCenter {
+    @apply absolute inset-0 flex flex-col items-center justify-center gap-1;
+  }
+  .gaugeText {
+    @apply text-center;
+  }
+  .trendArrow {
+    @apply w-6 h-6 rounded-full;
+    position: relative;
+    filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.35));
+  }
+  .trendArrow::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    border-right: 3px solid currentColor;
+    border-top: 3px solid currentColor;
+    border-radius: 1px;
+  }
+  .trendUp {
+    color: #22c55e; /* green-500 */
+  }
+  .trendDown {
+    color: #ef4444; /* red-500 */
+    filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.35));
+    transform: rotate(180deg);
+  }
   .gaugeValue {
     @apply text-4xl font-extrabold;
   }
   .gaugeSub {
     @apply text-sm text-gray-400;
+  }
+
+  /* Mini gauge variant */
+  .miniGauge {
+    @apply relative w-14 h-14 flex items-center justify-center;
+  }
+  .miniGaugeSvg {
+    @apply absolute inset-0 w-full h-full;
+    transform: rotate(-90deg);
+  }
+  .miniGaugeFg {
+    fill: none;
+    stroke: url(#gaugeGrad);
+    stroke-linecap: round;
+    stroke-width: 10;
+    transition: stroke-dasharray 300ms ease;
+  }
+  .miniGaugeCenter {
+    @apply absolute inset-0 flex items-center justify-center;
   }
 
   .clientsTable {
@@ -300,5 +535,187 @@ body {
   }
   .pagerBtn {
     @apply w-7 h-7 rounded-full bg-gray-900 border border-gray-700 flex items-center justify-center;
+  }
+}
+
+@layer components {
+  /* History page */
+  .historyContainer {
+    @apply max-w-5xl mx-auto pt-8;
+  }
+  .historyTopBar {
+    @apply flex items-center;
+  }
+  .clientSelector {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0e0e0e] border border-gray-800 text-gray-200 shadow-sm;
+  }
+  .clientName {
+    @apply text-base font-medium;
+  }
+  .selectorWrap {
+    @apply relative;
+  }
+  .selectorMenu {
+    @apply absolute mt-2 w-64 bg-[#0f0f0f] border border-gray-800 rounded-xl shadow-lg overflow-hidden z-40;
+  }
+  .selectorSearchWrap {
+    @apply flex items-center gap-2 px-3 py-2 border-b border-gray-800 bg-[#0e0e0e];
+  }
+  .selectorSearch {
+    @apply flex-1 bg-transparent outline-none text-sm text-gray-200 placeholder-gray-500;
+  }
+  .selectorItem {
+    @apply w-full text-left px-3 py-2 text-sm text-gray-200 hover:bg-gray-800/60 flex items-center gap-2;
+  }
+  .selectorItemActive {
+    @apply bg-gray-900;
+  }
+  .menuOverlay {
+    @apply fixed inset-0;
+  }
+  .selectorAvatar {
+    @apply w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-[10px] font-semibold text-gray-200;
+  }
+  .historyHeader {
+    @apply mt-10 flex items-center justify-between;
+  }
+  .historyTitle {
+    @apply text-2xl font-semibold text-gray-100;
+  }
+  .iconDots {
+    @apply inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-transparent border border-transparent hover:border-gray-700;
+  }
+  .iconDots span {
+    @apply w-1 h-1 rounded-full bg-gray-400 block;
+  }
+  .historyDivider {
+    @apply h-px bg-gray-800 my-5;
+  }
+  .historyItem {
+    @apply bg-[#0e0e0e] border border-gray-800 rounded-2xl p-4;
+  }
+  .historyItemHeader {
+    @apply flex items-center gap-3 mb-3;
+  }
+  .historyBadge {
+    @apply w-7 h-7 rounded-full flex items-center justify-center shadow-inner;
+  }
+  .historyBadge--blue {
+    background: radial-gradient(100% 100% at 50% 0%, #3b82f6 0%, #60a5fa 100%);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.35);
+  }
+  .historyBadge--yellow {
+    background: radial-gradient(100% 100% at 50% 0%, #f59e0b 0%, #fde047 100%);
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+  }
+  .historyBadge--gray {
+    background: radial-gradient(100% 100% at 50% 0%, #9ca3af 0%, #e5e7eb 100%);
+    box-shadow: 0 0 12px rgba(156, 163, 175, 0.25);
+  }
+  .historyItemTitle {
+    @apply text-gray-200 font-medium;
+  }
+  .historyTable {
+    @apply grid bg-[#0b0b0b] border border-gray-800 rounded-xl p-4;
+    grid-template-columns: 140px 1fr 1fr 100px 140px;
+    column-gap: 16px;
+    row-gap: 12px;
+  }
+  .historyTh {
+    @apply text-[11px] uppercase text-gray-400 tracking-wide;
+  }
+  .historyTd {
+    @apply text-sm text-gray-200;
+  }
+  .historyTd.text-right {
+    @apply text-right;
+  }
+  .seeChartBtn {
+    @apply inline-flex items-center justify-center px-4 py-2 text-xs rounded-full bg-[#1a1a1a] border border-gray-700 text-gray-200 hover:bg-[#232323];
+  }
+  .historyRowSolo {
+    @apply flex items-center justify-end;
+  }
+  .historyFooter {
+    @apply flex items-center justify-center gap-4 mt-8;
+  }
+  .pagerCircle {
+    @apply w-8 h-8 rounded-full bg-[#0e0e0e] border border-gray-700 flex items-center justify-center;
+  }
+  .historyPageInfo {
+    @apply text-xs text-gray-400;
+  }
+}
+
+@layer components {
+  /* Modal + chart */
+  .modalOverlay {
+    @apply fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50;
+  }
+  .modalContent {
+    @apply bg-[#0c0c0c] border border-blue-600/50 rounded-2xl shadow-2xl max-w-5xl w-full p-5;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35) inset;
+  }
+  .chartHeader {
+    @apply flex items-center justify-between mb-3;
+  }
+  .chartTitle {
+    @apply text-sm text-gray-300;
+  }
+  .chartActions {
+    @apply flex items-center gap-4 text-xs text-gray-400;
+  }
+  .chartAction {
+    @apply hover:text-gray-200 underline underline-offset-4 decoration-dotted;
+  }
+  .chartArea {
+    @apply flex gap-4 bg-[#0b0b0b] rounded-xl border border-gray-800 p-3;
+  }
+  .chartSvg {
+    @apply flex-1 rounded-lg border border-gray-800 bg-gradient-to-b from-[#111] to-[#0c0c0c];
+    outline: 2px solid rgba(59, 130, 246, 0.5);
+    outline-offset: 3px;
+  }
+  .chartSide {
+    @apply w-56 space-y-3;
+  }
+  .sideStat {
+    @apply bg-[#101010] border border-gray-800 rounded-lg p-3;
+  }
+  .sideLabel {
+    @apply text-[11px] uppercase text-gray-400;
+  }
+  .sideValue {
+    @apply block text-sm text-gray-200 mt-1;
+  }
+  .legend {
+    @apply mt-2 space-y-2 text-sm text-gray-300;
+  }
+  .legendItem {
+    @apply flex items-center gap-2;
+  }
+  .legendDot {
+    @apply inline-block w-3 h-3 rounded-full;
+  }
+  .legendDot--gold {
+    background: linear-gradient(90deg, #fbbf24, #fde68a);
+  }
+  .legendDot--blue {
+    background: #60a5fa;
+  }
+  .legendDot--green {
+    background: #22c55e;
+  }
+  .chartFooter {
+    @apply mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3;
+  }
+  .footerStat {
+    @apply bg-[#0b0b0b] border border-gray-800 rounded-lg p-3;
+  }
+  .footerLabel {
+    @apply text-[11px] uppercase text-gray-400;
+  }
+  .footerValue {
+    @apply text-sm text-gray-100 mt-1;
   }
 }

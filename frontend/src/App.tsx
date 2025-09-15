@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ClientProvider } from "./clientContext";
 import Sidebar from "./components/Sidebar";
 import ClientDashboard from "./components/ClientDashboard";
 import GoalList from "./components/GoalList";
@@ -27,10 +28,12 @@ function App() {
   };
 
   return (
-    <div className="flex bg-black min-h-screen text-white">
-      <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      <div className="flex-1 p-8">{renderContent()}</div>
-    </div>
+    <ClientProvider>
+      <div className="flex bg-black min-h-screen text-white">
+        <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        <div className="flex-1 p-8">{renderContent()}</div>
+      </div>
+    </ClientProvider>
   );
 }
 

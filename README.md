@@ -37,7 +37,3 @@ Ferramenta para acompanhar o alinhamento dos clientes ao planejamento financeiro
 ## Objetivo
 
 Criar uma solução simples e eficiente para auxiliar no controle e planejamento financeiro de clientes.
-
-##
-
-#### in progres...

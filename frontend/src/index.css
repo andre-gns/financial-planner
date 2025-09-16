@@ -32,21 +32,94 @@ body {
   }
   .kpiBar {
     @apply h-8 bg-gray-900 border border-gray-700 rounded-md overflow-hidden;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3),
+      inset 0 0 10px rgba(59, 130, 246, 0.1);
   }
   .kpiBar > div {
     @apply h-full bg-blue-500/60;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.6),
+      inset 0 0 8px rgba(59, 130, 246, 0.2);
   }
   .kpiBar--blue > div {
     @apply bg-indigo-400/70;
+    box-shadow: 0 0 8px rgba(129, 140, 248, 0.6),
+      inset 0 0 8px rgba(129, 140, 248, 0.2);
   }
   .kpiBar--violet > div {
     @apply bg-fuchsia-500/60;
+    box-shadow: 0 0 8px rgba(236, 72, 153, 0.6),
+      inset 0 0 8px rgba(236, 72, 153, 0.2);
   }
   .bigChartCard {
     @apply bg-[#0e0e0e] border border-gray-800 rounded-2xl p-4;
   }
-  .bigChartArea {
-    @apply mt-2 bg-[#0b0b0b] rounded-xl border border-gray-800 p-3;
+  .chartSvg {
+    @apply w-full;
+  }
+  .chartLine {
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+  .chartLine--blue {
+    filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.8));
+  }
+  .chartLine--green {
+    filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.8));
+  }
+  .chartLine--yellow {
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.8));
+  }
+  .chartDot {
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+  .chartDot--yellow {
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.9));
+  }
+  .chartGridLine {
+    filter: drop-shadow(0 0 2px rgba(42, 42, 42, 0.6));
+  }
+  .tlMinorTick--neon {
+    filter: drop-shadow(0 0 2px rgba(42, 42, 42, 0.8));
+  }
+  .tlMajorTick--neon {
+    filter: drop-shadow(0 0 3px rgba(63, 63, 70, 0.8));
+  }
+  .tlYear--neon {
+    filter: drop-shadow(0 0 4px rgba(229, 231, 235, 0.6));
+  }
+  .tlAge--neon {
+    filter: drop-shadow(0 0 3px rgba(156, 163, 175, 0.6));
+  }
+  .tlLegend--neon {
+    filter: drop-shadow(0 0 3px rgba(156, 163, 175, 0.6));
+  }
+  .liquidityChart {
+    @apply w-full h-80 bg-[#0b0b0b] rounded-xl border border-gray-800 p-3;
+    box-shadow: 0 0 15px rgba(0, 212, 170, 0.2),
+      inset 0 0 15px rgba(0, 212, 170, 0.05);
+  }
+  .liquidityChartSvg {
+    @apply w-full h-full;
+  }
+  .liquidityGridLine {
+    filter: drop-shadow(0 0 2px rgba(42, 42, 42, 0.6));
+  }
+  .liquidityYLabel {
+    @apply fill-white text-xs font-medium;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.6));
+  }
+  .liquidityXLabel {
+    @apply fill-white text-xs font-medium;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.6));
+  }
+  .liquidityBar {
+    filter: drop-shadow(0 0 8px rgba(0, 212, 170, 0.8));
+  }
+  .liquidityLegendDot {
+    filter: drop-shadow(0 0 4px currentColor);
+  }
+  .liquidityLegendText {
+    @apply fill-white text-xs;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.6));
   }
   .chipRow {
     @apply mt-3 flex items-center gap-3;
@@ -65,49 +138,59 @@ body {
   }
   .timelineCard {
     @apply bg-[#0e0e0e] border border-gray-800 rounded-2xl p-4;
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.15),
+      inset 0 0 15px rgba(34, 197, 94, 0.05);
   }
   .timelineSvg {
     @apply w-full;
   }
   .timelineHeader {
     @apply text-green-300 font-semibold mb-2;
+    text-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
   }
   .tlTitle {
-    @apply text-xs;
+    @apply text-[10px];
   }
   .tlTitle--green {
     @apply fill-green-400;
+    filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.7));
   }
   .tlTitle--red {
     @apply fill-red-400;
+    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.7));
   }
   .tlLegend {
-    @apply fill-gray-400 text-[11px];
+    @apply fill-gray-400 text-[9px];
   }
   .tlYear {
-    @apply fill-gray-200 text-sm;
+    @apply fill-gray-200 text-[10px];
   }
   .tlAge {
-    @apply fill-gray-400 text-xs;
+    @apply fill-gray-400 text-[9px];
   }
   .tlDot--green {
     fill: #22c55e;
+    filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.8));
   }
   .tlDot--red {
     fill: #ef4444;
+    filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.8));
   }
   .tlBubble {
-    @apply text-[11px];
+    @apply text-[9px] font-medium;
   }
   .tlBubble--green {
     @apply fill-green-300;
+    filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.6));
   }
   .tlBubble--red {
     @apply fill-red-400;
+    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.6));
   }
   .tlAxisDashed {
     stroke: #2a2a2a;
     stroke-dasharray: 6 6;
+    filter: drop-shadow(0 0 3px rgba(42, 42, 42, 0.8));
   }
   .tlMinorTick {
     stroke: #2a2a2a;
@@ -338,6 +421,8 @@ body {
   }
   .assetIcon {
     @apply w-8 h-8 rounded-full flex items-center justify-center text-white text-sm;
+    filter: drop-shadow(0 0 6px currentColor);
+    box-shadow: 0 0 8px currentColor, inset 0 0 4px rgba(255, 255, 255, 0.1);
   }
   .assetHeader {
     @apply flex items-center gap-3;

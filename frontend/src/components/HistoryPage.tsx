@@ -318,81 +318,74 @@ export default function HistoryPage() {
               </div>
             </div>
             <div className="chartArea">
-              <svg viewBox="0 0 640 260" className="chartSvg" aria-hidden>
-                <defs>
-                  <linearGradient
-                    id="lineGrad"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="0%"
-                  >
-                    <stop offset="0%" stopColor="#fbbf24" />
-                    <stop offset="100%" stopColor="#fde68a" />
-                  </linearGradient>
-                </defs>
-                {/* grid lines */}
+              <svg viewBox="0 0 720 260" className="chartSvg" aria-hidden>
                 {Array.from({ length: 6 }).map((_, i) => (
                   <line
-                    key={`g-${i}`}
+                    key={i}
                     x1="40"
                     y1={30 + i * 38}
-                    x2="620"
+                    x2="700"
                     y2={30 + i * 38}
                     stroke="#2a2a2a"
                     strokeWidth="1"
+                    className="chartGridLine"
                   />
                 ))}
-                {/* axes */}
-                <rect
-                  x="32"
-                  y="22"
-                  width="596"
-                  height="216"
-                  rx="10"
-                  ry="10"
-                  fill="none"
-                />
-                {/* dashed projections */}
                 <path
-                  d="M40,210 C160,150 240,100 360,90 C480,82 560,98 620,80"
+                  d="M40,210 C160,150 240,100 360,90 C480,82 560,98 700,80"
                   stroke="#60a5fa"
                   strokeWidth="3"
                   fill="none"
                   strokeDasharray="8 8"
                   opacity="0.9"
+                  className="chartLine chartLine--blue"
                 />
                 <path
-                  d="M40,210 C150,170 230,130 340,120 C460,112 530,150 620,200"
+                  d="M40,210 C150,170 230,130 340,120 C460,112 530,150 700,200"
                   stroke="#22c55e"
                   strokeWidth="3"
                   fill="none"
                   strokeDasharray="8 8"
                   opacity="0.9"
+                  className="chartLine chartLine--green"
                 />
-                {/* actual line */}
                 <path
                   d="M40,210 L120,190 L180,160 L240,150"
-                  stroke="url(#lineGrad)"
+                  stroke="#fbbf24"
                   strokeWidth="4"
                   fill="none"
                   strokeLinecap="round"
+                  className="chartLine chartLine--yellow"
                 />
-                {/* points */}
-                {[
-                  { x: 40, y: 210 },
-                  { x: 120, y: 190 },
-                  { x: 180, y: 160 },
-                  { x: 240, y: 150 },
-                ].map((p, i) => (
-                  <circle
-                    key={`p-${i}`}
-                    cx={p.x}
-                    cy={p.y}
-                    r="4"
-                    fill="#fbbf24"
-                  />
-                ))}
+                {/* Pontos na linha amarela */}
+                <circle
+                  cx="40"
+                  cy="210"
+                  r="4"
+                  fill="#fbbf24"
+                  className="chartDot chartDot--yellow"
+                />
+                <circle
+                  cx="120"
+                  cy="190"
+                  r="4"
+                  fill="#fbbf24"
+                  className="chartDot chartDot--yellow"
+                />
+                <circle
+                  cx="180"
+                  cy="160"
+                  r="4"
+                  fill="#fbbf24"
+                  className="chartDot chartDot--yellow"
+                />
+                <circle
+                  cx="240"
+                  cy="150"
+                  r="4"
+                  fill="#fbbf24"
+                  className="chartDot chartDot--yellow"
+                />
               </svg>
               <div className="chartSide">
                 <div className="sideStat">

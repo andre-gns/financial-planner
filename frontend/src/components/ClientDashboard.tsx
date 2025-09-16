@@ -225,14 +225,104 @@ export default function ClientDashboard() {
               </div>
               <div className="chartCard">
                 <p className="cardLabel">KPI Liquidez carteira</p>
-                <div className="barChart">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="bar"
-                      style={{ height: `${30 + (i % 4) * 15}px` }}
-                    />
-                  ))}
+                <div className="liquidityChart">
+                  <svg
+                    viewBox="0 0 400 350"
+                    className="liquidityChartSvg"
+                    aria-hidden
+                  >
+                    {/* Grid lines */}
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <line
+                        key={i}
+                        x1="40"
+                        y1={60 + i * 60}
+                        x2="380"
+                        y2={60 + i * 60}
+                        stroke="#2a2a2a"
+                        strokeWidth="1"
+                        className="liquidityGridLine"
+                      />
+                    ))}
+
+                    {/* Y-axis labels */}
+                    <text x="20" y="65" className="liquidityYLabel">
+                      500K
+                    </text>
+                    <text x="20" y="125" className="liquidityYLabel">
+                      250K
+                    </text>
+                    <text x="20" y="185" className="liquidityYLabel">
+                      100K
+                    </text>
+                    <text x="20" y="245" className="liquidityYLabel">
+                      50K
+                    </text>
+
+                    {/* Bars */}
+                    {[
+                      { year: 0, value: 110 },
+                      { year: 1, value: 20 },
+                      { year: 2, value: 70 },
+                      { year: 3, value: 230 },
+                      { year: 4, value: 100 },
+                      { year: 5, value: 30 },
+                      { year: 6, value: 350 },
+                      { year: 7, value: 45 },
+                      { year: 8, value: 200 },
+                      { year: 9, value: 300 },
+                    ].map((bar, i) => {
+                      const barHeight = (bar.value / 500) * 280; // Scale to max 500K - barras mais altas
+                      const barWidth = 24; // Largura menor (era 30)
+                      const barX = 50 + i * 35;
+                      const barY = 320 - barHeight;
+
+                      return (
+                        <g key={i}>
+                          <rect
+                            x={barX}
+                            y={barY}
+                            width={barWidth}
+                            height={barHeight}
+                            fill="#00d4aa"
+                            className="liquidityBar"
+                          />
+                          <text
+                            x={barX + barWidth / 2}
+                            y="335"
+                            className="liquidityXLabel"
+                            textAnchor="middle"
+                          >
+                            {bar.year}
+                          </text>
+                        </g>
+                      );
+                    })}
+
+                    {/* Legend */}
+                    <g className="liquidityLegend">
+                      <circle
+                        cx="320"
+                        cy="50"
+                        r="4"
+                        fill="#3b82f6"
+                        className="liquidityLegendDot"
+                      />
+                      <text x="335" y="55" className="liquidityLegendText">
+                        Esperade
+                      </text>
+                      <circle
+                        cx="320"
+                        cy="70"
+                        r="4"
+                        fill="#8b5cf6"
+                        className="liquidityLegendDot"
+                      />
+                      <text x="335" y="75" className="liquidityLegendText">
+                        Emergencia
+                      </text>
+                    </g>
+                  </svg>
                 </div>
               </div>
             </div>

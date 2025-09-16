@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useClientSelection } from "../clientContext";
 
@@ -169,44 +169,75 @@ export default function ProjectionPage() {
             <button className="chartAction">Ver como Tabela</button>
           </div>
         </div>
-        <div className="bigChartArea">
-          <svg viewBox="0 0 720 260" className="chartSvg" aria-hidden>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <line
-                key={i}
-                x1="40"
-                y1={30 + i * 38}
-                x2="700"
-                y2={30 + i * 38}
-                stroke="#2a2a2a"
-                strokeWidth="1"
-              />
-            ))}
-            <path
-              d="M40,210 C160,150 240,100 360,90 C480,82 560,98 700,80"
-              stroke="#60a5fa"
-              strokeWidth="3"
-              fill="none"
-              strokeDasharray="8 8"
-              opacity="0.9"
+        <svg viewBox="0 0 720 260" className="chartSvg" aria-hidden>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <line
+              key={i}
+              x1="40"
+              y1={30 + i * 38}
+              x2="700"
+              y2={30 + i * 38}
+              stroke="#2a2a2a"
+              strokeWidth="1"
+              className="chartGridLine"
             />
-            <path
-              d="M40,210 C150,170 230,130 340,120 C460,112 530,150 700,200"
-              stroke="#22c55e"
-              strokeWidth="3"
-              fill="none"
-              strokeDasharray="8 8"
-              opacity="0.9"
-            />
-            <path
-              d="M40,210 L120,190 L180,160 L240,150"
-              stroke="#fbbf24"
-              strokeWidth="4"
-              fill="none"
-              strokeLinecap="round"
-            />
-          </svg>
-        </div>
+          ))}
+          <path
+            d="M40,210 C160,150 240,100 360,90 C480,82 560,98 700,80"
+            stroke="#60a5fa"
+            strokeWidth="3"
+            fill="none"
+            strokeDasharray="8 8"
+            opacity="0.9"
+            className="chartLine chartLine--blue"
+          />
+          <path
+            d="M40,210 C150,170 230,130 340,120 C460,112 530,150 700,200"
+            stroke="#22c55e"
+            strokeWidth="3"
+            fill="none"
+            strokeDasharray="8 8"
+            opacity="0.9"
+            className="chartLine chartLine--green"
+          />
+          <path
+            d="M40,210 L120,190 L180,160 L240,150"
+            stroke="#fbbf24"
+            strokeWidth="4"
+            fill="none"
+            strokeLinecap="round"
+            className="chartLine chartLine--yellow"
+          />
+          {/* Pontos na linha amarela */}
+          <circle
+            cx="40"
+            cy="210"
+            r="4"
+            fill="#fbbf24"
+            className="chartDot chartDot--yellow"
+          />
+          <circle
+            cx="120"
+            cy="190"
+            r="4"
+            fill="#fbbf24"
+            className="chartDot chartDot--yellow"
+          />
+          <circle
+            cx="180"
+            cy="160"
+            r="4"
+            fill="#fbbf24"
+            className="chartDot chartDot--yellow"
+          />
+          <circle
+            cx="240"
+            cy="150"
+            r="4"
+            fill="#fbbf24"
+            className="chartDot chartDot--yellow"
+          />
+        </svg>
       </div>
 
       <div className="chipRow chipRow--center">
@@ -217,14 +248,14 @@ export default function ProjectionPage() {
 
       <div className="timelineCard">
         <div className="timelineHeader">Timeline</div>
-        <svg viewBox="0 0 720 180" className="timelineSvg" aria-hidden>
+        <svg viewBox="0 0 720 200" className="timelineSvg" aria-hidden>
           {(() => {
             const startYear = 2025;
             const endYear = 2060;
             const X0 = 40;
             const X1 = 700;
-            const Y_GREEN = 58; // linha superior (verde)
-            const Y_RED = 128; // linha inferior (vermelha)
+            const Y_GREEN = 65; // linha superior (verde)
+            const Y_RED = 135; // linha inferior (vermelha)
             const YEAR_Y = Math.round((Y_GREEN + Y_RED) / 2) + 6;
             const AGE_Y = YEAR_Y + 16;
             const scale = (year: number) => {
@@ -235,17 +266,21 @@ export default function ProjectionPage() {
             for (let y = startYear; y <= endYear; y += 10) years.push(y);
 
             const salaryPoints = [
-              { year: 2025, label: "CLT: R$ 15.000" },
-              { year: 2030, label: "CLT: R$ 16.000\nAutônomo: R$ 5.000" },
-              { year: 2035, label: "Autônomo: R$ 35.000" },
-              { year: 2045, label: "" },
+              { year: 2025, label: "CLT: R$ 15.000", offset: 0 },
+              {
+                year: 2030,
+                label: "CLT: R$ 16.000\nAutônomo: R$ 5.000",
+                offset: 1,
+              },
+              { year: 2035, label: "Autônomo: R$ 35.000", offset: 0 },
+              { year: 2045, label: "", offset: 0 },
             ];
             const costPoints = [
-              { year: 2025, label: "R$ 8.000" },
-              { year: 2032, label: "R$ 12.000" },
-              { year: 2040, label: "R$ 20.000" },
-              { year: 2045, label: "R$ 10.000" },
-              { year: 2055, label: "R$ 15.000" },
+              { year: 2025, label: "R$ 8.000", offset: 0 },
+              { year: 2032, label: "R$ 12.000", offset: 1 },
+              { year: 2040, label: "R$ 20.000", offset: 0 },
+              { year: 2045, label: "R$ 10.000", offset: 1 },
+              { year: 2055, label: "R$ 15.000", offset: 0 },
             ];
 
             return (
@@ -285,14 +320,14 @@ export default function ProjectionPage() {
                         y1={Y_GREEN}
                         x2={X0 + i * 20}
                         y2={Y_GREEN + 2}
-                        className="tlMinorTick"
+                        className="tlMinorTick tlMinorTick--neon"
                       />
                       <line
                         x1={X0 + i * 20}
                         y1={Y_RED - 2}
                         x2={X0 + i * 20}
                         y2={Y_RED}
-                        className="tlMinorTick"
+                        className="tlMinorTick tlMinorTick--neon"
                       />
                     </g>
                   )
@@ -305,24 +340,32 @@ export default function ProjectionPage() {
                         y1={Y_GREEN}
                         x2={X0 + i * 100}
                         y2={Y_GREEN + 6}
-                        className="tlMajorTick"
+                        className="tlMajorTick tlMajorTick--neon"
                       />
                       <line
                         x1={X0 + i * 100}
                         y1={Y_RED - 6}
                         x2={X0 + i * 100}
                         y2={Y_RED}
-                        className="tlMajorTick"
+                        className="tlMajorTick tlMajorTick--neon"
                       />
                     </g>
                   )
                 )}
 
                 {/* center legends */}
-                <text x={X0 - 24} y={YEAR_Y - 2} className="tlLegend">
+                <text
+                  x={X0 - 24}
+                  y={YEAR_Y - 2}
+                  className="tlLegend tlLegend--neon"
+                >
                   Ano
                 </text>
-                <text x={X0 - 28} y={AGE_Y - 2} className="tlLegend">
+                <text
+                  x={X0 - 28}
+                  y={AGE_Y - 2}
+                  className="tlLegend tlLegend--neon"
+                >
                   Idade
                 </text>
                 {years.map((yy) => (
@@ -330,7 +373,7 @@ export default function ProjectionPage() {
                     <text
                       x={scale(yy)}
                       y={YEAR_Y}
-                      className="tlYear"
+                      className="tlYear tlYear--neon"
                       textAnchor="middle"
                     >
                       {yy}
@@ -338,7 +381,7 @@ export default function ProjectionPage() {
                     <text
                       x={scale(yy)}
                       y={AGE_Y}
-                      className="tlAge"
+                      className="tlAge tlAge--neon"
                       textAnchor="middle"
                     >
                       {45 + (yy - startYear)}
@@ -358,7 +401,7 @@ export default function ProjectionPage() {
                     {p.label && (
                       <text
                         x={scale(p.year)}
-                        y={Y_GREEN - (28 + (i % 2) * 10)}
+                        y={Y_GREEN - (30 + p.offset * 20)}
                         className="tlBubble tlBubble--green"
                         textAnchor="middle"
                       >
@@ -366,7 +409,7 @@ export default function ProjectionPage() {
                           <tspan
                             key={j}
                             x={scale(p.year)}
-                            dy={j === 0 ? 0 : 12}
+                            dy={j === 0 ? 0 : 10}
                           >
                             {line}
                           </tspan>
@@ -385,12 +428,12 @@ export default function ProjectionPage() {
                     />
                     <text
                       x={scale(p.year)}
-                      y={Y_RED + (28 + (i % 2) * 10)}
+                      y={Y_RED + (30 + p.offset * 20)}
                       className="tlBubble tlBubble--red"
                       textAnchor="middle"
                     >
                       {p.label.split("\n").map((line, j) => (
-                        <tspan key={j} x={scale(p.year)} dy={j === 0 ? 0 : 12}>
+                        <tspan key={j} x={scale(p.year)} dy={j === 0 ? 0 : 10}>
                           {line}
                         </tspan>
                       ))}

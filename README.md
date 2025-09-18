@@ -1,39 +1,38 @@
 # Financial Planner
+Tool to monitor clients’ alignment with financial planning, project wealth growth, and record important events such as transactions, insurance, and goals.
 
-Ferramenta para acompanhar o alinhamento dos clientes ao planejamento financeiro, projetar a evolução patrimonial e registrar eventos importantes como movimentações, seguros e metas.
+## Features
+### Clients
 
-## Funcionalidades
+CRUD for information (name, email, age, active/inactive status, family profile).
 
-### Clientes
+### Planning & Alignment
 
-- CRUD de informações (nome, e-mail, idade, status ativo/inativo, perfil familiar).
+Record of financial goals (retirement, short/medium term) with target value and date.
 
-### Planejamento & Alinhamento
+Record of current portfolio (asset classes and percentages) and total wealth.
 
-- Registro de metas financeiras (aposentadoria, curto/médio prazo) com valor e data-alvo.
+Automatic calculation of alignment percentage (planned wealth ÷ current wealth).
 
-- Registro da carteira atual (classes e percentuais) e patrimônio total.
+Automatic color classification:
 
-- Cálculo automático do percentual de alinhamento (patrimônio no plano ÷ patrimônio atual).
+✅ Green: > 90%
 
-- Classificação automática por cores:
+🟡 Light Yellow: 90% to 70%
 
-✅ Verde: > 90%
+🟠 Dark Yellow: 70% to 50%
 
-🟡 Amarelo-claro: 90% a 70%
+🔴 Red: < 50%
 
-🟠 Amarelo-escuro: 70% a 50%
+Client financial tracking
 
-🔴 Vermelho: < 50%- Acompanhamento financeiro dos clientes
+Wealth growth projection
 
-- Projeção da evolução patrimonial
+Record of transactions
 
-- Registro de movimentações
+Insurance management
 
-- Controle de seguros
+Definition and monitoring of goals
 
-- Definição e acompanhamento de metas
-
-## Objetivo
-
-Criar uma solução simples e eficiente para auxiliar no controle e planejamento financeiro de clientes.
+## Objective
+Create a simple and efficient solution to support clients’ financial control and planning.

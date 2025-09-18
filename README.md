@@ -4,7 +4,7 @@ Tool to monitor clients’ alignment with financial planning, project wealth gro
 ## Features
 ### Clients
 
-CRUD for information (name, email, age, active/inactive status, family profile).
+- CRUD for information (name, email, age, active/inactive status, family profile).
 
 ### Planning & Alignment
 

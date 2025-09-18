@@ -8,13 +8,13 @@ CRUD for information (name, email, age, active/inactive status, family profile).
 
 ### Planning & Alignment
 
-Record of financial goals (retirement, short/medium term) with target value and date.
+- Record of financial goals (retirement, short/medium term) with target value and date.
 
-Record of current portfolio (asset classes and percentages) and total wealth.
+- Record of current portfolio (asset classes and percentages) and total wealth.
 
-Automatic calculation of alignment percentage (planned wealth ÷ current wealth).
+- Automatic calculation of alignment percentage (planned wealth ÷ current wealth).
 
-Automatic color classification:
+- Automatic color classification:
 
 ✅ Green: > 90%
 
@@ -24,15 +24,15 @@ Automatic color classification:
 
 🔴 Red: < 50%
 
-Client financial tracking
+- Client financial tracking
 
-Wealth growth projection
+- Wealth growth projection
 
-Record of transactions
+- Record of transactions
 
-Insurance management
+- Insurance management
 
-Definition and monitoring of goals
+- Definition and monitoring of goals
 
 ## Objective
 Create a simple and efficient solution to support clients’ financial control and planning.
